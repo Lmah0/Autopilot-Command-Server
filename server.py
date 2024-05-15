@@ -11,7 +11,6 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) # Overriding CORS for external access
 
 vehicle_connection = None
-testing = None
 
 @app.route('/coordinate_waypoint', methods=['POST'])
 def coordinate_waypoint():
@@ -27,8 +26,18 @@ def coordinate_waypoint():
     
     return jsonify({'message': 'Waypoint set successfully'}), 200
 
+@app.route('/testing', methods=['POST'])
+def hello():
+    print("hi")
+    data = request.json
+    try:
+        latitude = int(data['latitude'])
+        longitude = int(data['longitude'])
+    except Exception as e:
+        return jsonify({'error': 'Invalid data'}), 400
+
+    return ({'message': 'success'}), 200
 
 if __name__ == '__main__':
     # vehicle_connection = initialize.connect_to_vehicle()
-    print(testing)
     app.run(debug=True, host='0.0.0.0')
