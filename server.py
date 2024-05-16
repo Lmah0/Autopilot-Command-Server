@@ -39,15 +39,6 @@ def relative_waypoint():
     waypoint.relative_movement(vehicle_connection, north, east, down)
     
     return jsonify({'message': 'Waypoint set successfully'}), 200
-@app.route('/testing', methods=['POST'])
-def hello():
-    print("hi")
-    data = request.json
-    try:
-        latitude = int(data['latitude'])
-        longitude = int(data['longitude'])
-    except Exception as e:
-        return jsonify({'error': 'Invalid data'}), 400
 
 @app.route('/arm', methods=['POST'])
 def arm():
@@ -81,9 +72,11 @@ def takeoff():
     
     return jsonify({'message': 'Vehicle took off successfully'}), 200
 
-
-    return ({'message': 'success'}), 200
-
 if __name__ == '__main__':
-    # vehicle_connection = initialize.connect_to_vehicle()
+    vehicle_connection = initialize.connect_to_vehicle()
+    retVal = initialize.verify_connection(vehicle_connection)
+    if retVal != True:
+        print("Connection failed. Exiting application.")
+        exit(1)
+        
     app.run(debug=True, host='0.0.0.0')
