@@ -26,6 +26,19 @@ def coordinate_waypoint():
     
     return jsonify({'message': 'Waypoint set successfully'}), 200
 
+@app.route('/relative_waypoint', methods=['POST'])
+def relative_waypoint():
+    data = request.json
+    try:
+        north = int(data['north'])
+        east = int(data['east'])
+        down = int(data['down'])
+    except Exception as e:
+        return jsonify({'error': 'Invalid data'}), 400
+    
+    waypoint.relative_movement(vehicle_connection, north, east, down)
+    
+    return jsonify({'message': 'Waypoint set successfully'}), 200
 @app.route('/testing', methods=['POST'])
 def hello():
     print("hi")
@@ -35,6 +48,39 @@ def hello():
         longitude = int(data['longitude'])
     except Exception as e:
         return jsonify({'error': 'Invalid data'}), 400
+
+@app.route('/arm', methods=['POST'])
+def arm():
+    arm.arm(vehicle_connection)
+    return jsonify({'message': 'Vehicle armed successfully'}), 200
+
+@app.route('/disarm', methods=['POST'])
+def disarm():
+    arm.disarm(vehicle_connection)
+    return jsonify({'message': 'Vehicle disarmed successfully'}), 200
+
+@app.route('/set_mode', methods=['POST'])
+def set_mode():
+    data = request.json
+    try:
+        mode_id = int(data['mode_id'])
+        mode.set_mode(vehicle_connection, mode_id)
+    except Exception as e:
+        return jsonify({'error': 'Invalid data.'}), 400
+    
+    return jsonify({'message': 'Mode set successfully'}), 200
+
+@app.route('/takeoff', methods=['POST'])
+def takeoff():
+    data = request.json
+    try:
+        takeoff_height = int(data['takeoff_height'])
+        takeoff.takeoff(vehicle_connection, takeoff_height)
+    except Exception as e:
+        return jsonify({'error': 'Invalid data.'}), 400
+    
+    return jsonify({'message': 'Vehicle took off successfully'}), 200
+
 
     return ({'message': 'success'}), 200
 
