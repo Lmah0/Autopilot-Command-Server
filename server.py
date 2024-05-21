@@ -1,3 +1,4 @@
+import sys
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -18,7 +19,7 @@ def coordinate_waypoint():
     try:
         latitude = int(data['latitude'])
         longitude = int(data['longitude'])
-        altitude = int(data['altitude'])
+        altitude = 25
     except Exception as e:
         return jsonify({'error': 'Invalid data'}), 400
     
@@ -73,7 +74,9 @@ def takeoff():
     return jsonify({'message': 'Vehicle took off successfully'}), 200
 
 if __name__ == '__main__':
-    vehicle_connection = initialize.connect_to_vehicle()
+    if len(sys.argv) == 2:
+        vehicle_port = sys.argv[1]
+    vehicle_connection = initialize.connect_to_vehicle(vehicle_port)
     retVal = initialize.verify_connection(vehicle_connection)
     if retVal != True:
         print("Connection failed. Exiting application.")
